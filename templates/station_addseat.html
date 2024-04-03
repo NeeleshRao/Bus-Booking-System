@@ -1,0 +1,103 @@
+{% extends "station_layout.html" %}
+<!--title part-->
+{% block title %}Schedule Bus{% endblock %}
+<!--head part-->
+{% block head %} {{ super() }}
+<style>
+  .card {
+    margin-top: 40px;
+  }
+
+  #button1 {
+    margin-top: 20px;
+    width: 190px;
+    border-radius: 50px;
+    background-color: #1565c0;
+    color: white;
+    margin-bottom: 20px;
+  }
+  #adm-tab {
+    font-family: Bahnschrift SemiBold;
+    text-decoration: none;
+    color: #7e57c2;
+  }
+  .card-title {
+    text-align: center;
+    font-family: Bahnschrift SemiBold;
+    font-size: 25px;
+  }
+</style>
+{% endblock %}
+<!--content part-->
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">Schedule Bus</div>
+        <div class="card-body">
+          <div class="container">
+            <form action="/schedule_bus" method="POST">
+              <div class="mb-3" style="margin-top: 10px">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label"> Bus Id </label>
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  name="bus"
+                >
+                  {% if data %} {% for i in data %}
+                  <option>{{i.id}}</option>
+                  {% endfor %} {% else %}
+                  <option>Currently no buses Available</option>
+                  {% endif %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"> From Location </label>
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  name="from_location"
+                >
+                  {% if data %} {% for i in data %}
+                  <option>{{i.from_location}}</option>
+                  {% endfor %} {% else %}
+                  <option>No Boarding Point Available</option>
+                  {% endif %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"> To Location </label>
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  name="to_location"
+                >
+                  {% if data %} {% for i in data %}
+                  <option>{{i.to_location}}</option>
+                  {% endfor %} {% else %}
+                  <option>No Destination Available</option>
+                  {% endif %}
+                </select>
+              </div>
+
+              <div class="row justify-content-center">
+                <button type="submit" id="button1" class="btn btn-primarys">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br /><br />
+{% endblock %}

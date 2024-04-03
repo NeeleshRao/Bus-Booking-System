@@ -1,0 +1,130 @@
+{% extends "user_layout.html" %}
+<!--title part-->
+{% block title %}Book Bus{% endblock %}
+<!--head part-->
+{% block head %} {{ super() }}
+<style>
+  .card {
+    margin-top: 40px;
+  }
+
+  #button1 {
+    margin-top: 20px;
+    width: 190px;
+    border-radius: 50px;
+    background-color: #1565c0;
+    color: white;
+    margin-bottom: 20px;
+  }
+  #adm-tab {
+    font-family: Bahnschrift SemiBold;
+    text-decoration: none;
+    color: #7e57c2;
+  }
+  .card-title {
+    text-align: center;
+    font-family: Bahnschrift SemiBold;
+    font-size: 25px;
+  }
+  h4 {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #000;
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+    font-family: Bahnschrift SemiBold;
+  }
+
+  h4 span {
+    background: #fff;
+    padding: 0 10px;
+  }
+
+  .my-button {
+  display: block;
+  margin: auto;
+}
+</style>
+{% endblock %}
+<!--content part-->
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">Enter Review</div>
+        <div class="card-body">
+          <div class="container">
+            <form action="/leave_review" method="post">
+              <div class="mb-3" style="margin-top: 10px">
+                <label class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  value="{{session['user_name']}}"
+                  readonly
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email </label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  value="{{session['user_email']}}"
+                  readonly
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Your valued Review </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  name="user_review"
+                  required
+                />
+              </div>
+
+              <br />
+              <div class="row justify-content-center">
+                <button type="submit" id="button1" class="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">All User Reviews</div>
+        
+          <div class="card">
+            {% for review in all_reviews%}
+            <div class="justify-content-center">
+              <div class="card-body justify-content-center">
+                <p class="justify-content-center" style="text-align: center;">
+                  {{review.user_review}}
+                </p>
+
+                <form method="POST" action="{{url_for('delete', id=review['_id'])}}">
+                  <input class="my-button" style="text-align: center;" type="submit" value="Delete post" onclick="return confirm('Are you sure you want to delete this entry?')">
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br /><br />
+
+{% endblock %}
