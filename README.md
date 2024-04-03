@@ -1,5 +1,6 @@
 This project was done as part of 5th Semester Database Management Systems Course.
 It is a bus booking system, which incorporates all CRUD Operations.
+For the innovative component, a transformers model was incorporated to analyze if the reviews were positive or negative.
 
 # Main Admin
 

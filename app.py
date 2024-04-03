@@ -24,7 +24,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(16)
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bus_db.db"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:bablu2002@localhost/bus_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost/bus_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_NAME"] = "login-system"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=5)
@@ -161,7 +161,42 @@ def delete(id):
     reviews.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('userdash'))
 
-
+@app.route("/analyzereviews")
+def analyze_reviews():
+    if "mainadmin" in session:
+        from transformers import pipeline
+        specific_model = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
+        
+        x = reviews.find()
+        all_reviews = []
+        for i in x:
+            all_reviews.append(i['user_review'])
+        
+        outputs = specific_model(all_reviews)
+        sc = 0
+        print(outputs)
+        for i in outputs:
+            if i["label"] == "POS":
+                sc += 1 * i["score"]
+            elif i["label"] == "NEG":
+                sc -= 1 * i["score"]
+        print(sc)
+        if sc > 0:
+            print("inside")
+            flash("Overall reviews are positive!!!", "success")
+            return redirect(url_for('admdash'))
+        else:
+            print("inside1")
+            flash("Bad Reviews!! Need to buck up!", "error")
+            return redirect(url_for('admdash'))
+        
+        
+    else:
+        flash("Session Expired", "error")
+        return redirect(url_for("adminlog"))
+            
+        
+        
 
 
 
