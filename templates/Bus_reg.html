@@ -107,7 +107,7 @@
                   name="from_loc"
                   required
                 /> -->
-                <select
+                <!-- <select
                   class="form-select"
                   aria-label="Default select example"
                   name="from_loc"
@@ -118,7 +118,14 @@
                   {% endfor %} {% else %}
                   <option>Currently not accepting</option>
                   {% endif %}
-                </select>
+                </select> -->
+                <input
+                  type="text"
+                  class="form-control"
+                  name="from_loc"
+                  value="{{from_location}}"
+                  readonly
+                />
               </div>
               <div class="mb-3">
                 <label class="form-label"> To Location</label>

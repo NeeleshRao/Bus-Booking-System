@@ -59,7 +59,7 @@
 
               <div class="mb-3">
                 <label class="form-label"> From Location </label>
-                <select
+                <!-- <select
                   class="form-select"
                   aria-label="Default select example"
                   name="from_location"
@@ -69,7 +69,14 @@
                   {% endfor %} {% else %}
                   <option>No Boarding Point Available</option>
                   {% endif %}
-                </select>
+                </select> -->
+                <input
+                  type="text"
+                  class="form-control"
+                  name="from_location"
+                  value="{{from_location}}"
+                  readonly
+                />
               </div>
 
               <div class="mb-3">

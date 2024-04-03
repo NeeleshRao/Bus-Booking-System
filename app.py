@@ -24,7 +24,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(16)
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bus_db.db"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost/bus_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:bablu2002@localhost/bus_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_NAME"] = "login-system"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=5)
@@ -348,9 +348,13 @@ def reg_station():
 def busreg():
     if "admin" in session:
         station_locations = Station.query.distinct(Station.id).all()
+        station_access = Station.query.filter_by(email = session["admin_email"]).first()  
+        admin_location = station_access.station_location 
+        
+        
         
         return render_template(
-            "Bus_reg.html", location=station_locations
+            "Bus_reg.html", location=station_locations, from_location=admin_location
         )
     else:
         flash("Session Expired", "error")
@@ -896,7 +900,7 @@ def add_seat():
         
         new_data = [] 
         for i in data:
-            if i.from_location == admin_location or i.to_location == admin_location:
+            if i.from_location == admin_location:
                 new_data.append(i)
         
         the_list = []
@@ -906,7 +910,7 @@ def add_seat():
                 the_list.append(i.id)
                 newer_data.append(i)
         
-        return render_template("station_addseat.html", data=newer_data)
+        return render_template("station_addseat.html", from_location=admin_location, data=newer_data)
     else:
         flash("Session Expired", "error")
         return redirect(url_for("stationlog"))
@@ -926,7 +930,7 @@ def schedule_bus():
             if from_location != to_location:
                 
                 the_bus = Bus.query.filter_by(id=bus_id, from_location=from_location, to_location=to_location).all()
-                
+                print(the_bus)
                 if the_bus != []:
                     if date_obj < today:
                         flash(Markup("Selected date is older than today's date"), "error")
