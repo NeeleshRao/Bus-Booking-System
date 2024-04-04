@@ -17,6 +17,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
 
+
 ################################################################
 ##################################################################
 ######################Initializations#############################
@@ -32,6 +33,7 @@ client = MongoClient('localhost', 27017)
 db_mongo = client.flask_db
 reviews = db_mongo.reviews
 db = SQLAlchemy(app)
+
 
 #######################################################################3
 ######################################################################
@@ -111,12 +113,15 @@ class Book(db.Model):
 # db.drop_all()
 
 
+
 @app.route("/")
 def home():
     return render_template("Home.html")
 
 
-
+@app.route("/openchatbot")
+def open_chatbot():
+    return render_template("chatbot.html")
 
 
 
@@ -166,13 +171,14 @@ def analyze_reviews():
     if "mainadmin" in session:
         from transformers import pipeline
         specific_model = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
-        
+        print("Here")
         x = reviews.find()
         all_reviews = []
         for i in x:
             all_reviews.append(i['user_review'])
-        
+        print("Next")
         outputs = specific_model(all_reviews)
+        
         sc = 0
         print(outputs)
         for i in outputs:
@@ -192,6 +198,7 @@ def analyze_reviews():
         
         
     else:
+        print("Waste")
         flash("Session Expired", "error")
         return redirect(url_for("adminlog"))
             

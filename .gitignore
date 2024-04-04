@@ -1,2 +1,3 @@
 venv/
 dbms_el/
+.env
