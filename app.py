@@ -16,6 +16,8 @@ from flask import Flask, render_template, request, url_for, redirect
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
+from transformers import pipeline
+
 
 
 ################################################################
@@ -33,6 +35,7 @@ client = MongoClient('localhost', 27017)
 db_mongo = client.flask_db
 reviews = db_mongo.reviews
 db = SQLAlchemy(app)
+specific_model = pipeline('sentiment-analysis')
 
 
 #######################################################################3
@@ -169,9 +172,11 @@ def delete(id):
 @app.route("/analyzereviews")
 def analyze_reviews():
     if "mainadmin" in session:
-        from transformers import pipeline
+        print("Here 2")
+        
         # specific_model = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
-        specific_model = pipeline('sentiment-analysis')
+        print("Here 1")
+        
         print("Here")
         x = reviews.find()
         all_reviews = []
@@ -1846,4 +1851,4 @@ def change_admin_pass():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=9876)
+    app.run(debug=True, port=9876, use_reloader=False)
