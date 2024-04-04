@@ -170,21 +170,22 @@ def delete(id):
 def analyze_reviews():
     if "mainadmin" in session:
         from transformers import pipeline
-        specific_model = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
+        # specific_model = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
+        specific_model = pipeline('sentiment-analysis')
         print("Here")
         x = reviews.find()
         all_reviews = []
         for i in x:
             all_reviews.append(i['user_review'])
-        print("Next")
+        print(all_reviews)
         outputs = specific_model(all_reviews)
         
         sc = 0
         print(outputs)
         for i in outputs:
-            if i["label"] == "POS":
+            if i["label"] == "POSITIVE":
                 sc += 1 * i["score"]
-            elif i["label"] == "NEG":
+            elif i["label"] == "NEGATIVE":
                 sc -= 1 * i["score"]
         print(sc)
         if sc > 0:
@@ -1078,7 +1079,29 @@ def reset_seats():
 def booklist():
     if "admin" in session:
         reservations = Book.query.filter_by(status=0).all()
-        return render_template("Booked_list.html", data=reservations)
+        station_access = Station.query.filter_by(email = session["admin_email"]).first()  
+        admin_location = station_access.station_location 
+        
+        all_bus_id = []
+        for i in reservations:
+            all_bus_id.append(i.bus_id)
+        
+        all_scheduled_bus = Seats.query.all()
+        needed_reserved_buses = []
+        for i in all_scheduled_bus:
+            if i.bus_id in all_bus_id and i.from_location == admin_location:
+                needed_reserved_buses.append(i.bus_id)
+        
+        final = []
+        for i in reservations:
+            if i.bus_id in needed_reserved_buses:
+                final.append(i)
+                
+        
+        
+            
+        
+        return render_template("Booked_list.html", data=final)
     else:
         flash("Session Expired", "error")
         return redirect(url_for("stationlog"))
